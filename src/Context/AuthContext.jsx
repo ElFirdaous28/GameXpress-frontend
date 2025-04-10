@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
                     const { data } = await api.get('v1/admin/user');
                     setUser(data);
                     setIsAuthenticated(true);
-                    navigate("/dashboard");
                 } catch (err) {
                     console.error('Authentication check failed:', err);
                     logout();
@@ -49,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", token);
         setToken(token); // Set the token here
         setIsAuthenticated(true);
+        navigate("/dashboard");
     };
 
     // Register action
@@ -65,6 +65,7 @@ export const AuthProvider = ({ children }) => {
         setToken(token); // Set the token here
         setUser(response.data.user);
         setIsAuthenticated(true);
+        navigate("/dashboard");
     };
 
     // Logout action
@@ -94,6 +95,8 @@ export const AuthProvider = ({ children }) => {
         hasRole,
         loading
     }), [user, token, isAuthenticated, loading]); // Only recompute when dependencies change
+
+
 
     return (
         <AuthContext.Provider value={contextValue}>
