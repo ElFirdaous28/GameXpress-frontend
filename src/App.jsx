@@ -12,6 +12,7 @@ import AddProduct from './Pages/Products/AddProduct';
 import EditProduct from './Pages/Products/EditProduct';
 import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
+import UserManagementTable from './Pages/UserManagementTable';
 
 
 export default function App() {
@@ -35,6 +36,8 @@ export default function App() {
       <Route path="/products" element={<AllProducts />} />
       <Route path="/products/add" element={<AddProduct />} />
       <Route path="/products/edit/:id" element={<EditProduct />} />
+
+      <Route path="/users" element={<UserManagementTable />} />
 
       <Route path="/f" element={<Layout />} />
       {/* </Route> */}
