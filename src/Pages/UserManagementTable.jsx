@@ -153,7 +153,7 @@ export default function UserManagementTable() {
 
                     {/* Formulaire d'ajout */}
                     {showAddForm && (
-                        <div className="mb-6 p-4 border border-gray-200 rounded-md p-6 bg-gray-800">
+                        <div className="mb-6 border border-gray-200 rounded-md p-6 bg-gray-800">
                             <h3 className="text-lg font-medium mb-4">Ajouter un nouvel utilisateur</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
