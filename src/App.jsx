@@ -13,34 +13,54 @@ import EditProduct from './Pages/Products/EditProduct';
 import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
 import UserManagementTable from './Pages/UserManagementTable';
+import { UserProvider } from './Context/UserContext';
+import { CategoryProvider } from './Context/CategoryContext';
+import Categories from './Pages/Categories';
 
 
 export default function App() {
   const { loading } = useAuth();
 
   return (
-    <Routes>
+    <>
+      <Routes>
 
 
-      <Route path="/login" element={<UnauthenticatedRoute element={<Login />} />} />
-      <Route path="/register" element={<UnauthenticatedRoute element={<Register />} />} />
+        <Route path="/login" element={<UnauthenticatedRoute element={<Login />} />} />
+        <Route path="/register" element={<UnauthenticatedRoute element={<Register />} />} />
 
-      <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
 
-      {/* Protected Routes */}
-      {/* <Route element={<PrivateRoute roles={["super_admin"]} />}> */}
-      <Route path="/test" element={<MyTest />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+        {/* Protected Routes */}
+        {/* <Route element={<PrivateRoute roles={["super_admin"]} />}> */}
+        <Route path="/test" element={<MyTest />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-      <Route path="/products" element={<AllProducts />} />
-      <Route path="/products/add" element={<AddProduct />} />
-      <Route path="/products/edit/:id" element={<EditProduct />} />
+        <Route path="/products" element={<AllProducts />} />
+        <Route path="/products/add" element={<AddProduct />} />
+        <Route path="/products/edit/:id" element={<EditProduct />} />
 
-      <Route path="/users" element={<UserManagementTable />} />
 
-      <Route path="/f" element={<Layout />} />
-      {/* </Route> */}
-    </Routes>
+
+        <Route path="/f" element={<Layout />} />
+        <Route
+          path="/users"
+          element={
+            <UserProvider>
+              <UserManagementTable />
+            </UserProvider>
+          }
+        />
+        <Route path="/categories" element={
+          <CategoryProvider>
+          <Categories />
+          </CategoryProvider>
+        } />
+        {/* </Route> */}
+      </Routes>
+
+
+    </>
   );
 }
