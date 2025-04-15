@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
-import AppLink from "../App/Link";
+import AppLink from "../../components/App/Link";
 
 import { useAuth } from "../../Context/AuthContext";
 

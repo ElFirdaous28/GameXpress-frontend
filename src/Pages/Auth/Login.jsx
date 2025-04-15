@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import AppLink from "../App/Link";
 import { useAuth } from "../../Context/AuthContext";
+import AppLink from "../../components/App/Link";
 
 export default function Login({ switchToRegister }) {
   const [showPassword, setShowPassword] = useState(false);

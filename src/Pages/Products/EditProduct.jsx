@@ -11,11 +11,15 @@ import {
 import Layout from "../Layout";
 import api from "../../Services/api";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
+
 
 export default function EditProduct() {
   const { id } = useParams();
-  const productId = parseInt(id); 
-  
+  const productId = parseInt(id);
+  const navigate = useNavigate();
+
+
 
   const [formData, setFormData] = useState({
     name: "",
@@ -43,12 +47,12 @@ export default function EditProduct() {
   // Mock image uploads
   const [imagePreviewUrls, setImagePreviewUrls] = useState([]);
   const [primaryImagePreview, setPrimaryImagePreview] = useState(null);
-  const [deletedImages, setDeletedImages] = useState([]); 
+  const [deletedImages, setDeletedImages] = useState([]);
 
   // Mock API call to get product data
   useEffect(() => {
     const fetchProduct = async () => {
-      try {        
+      try {
         const response = await api.get(`v1/admin/products/${productId}`);
         const product = response.data.product;
         setFormData(product);
@@ -69,14 +73,14 @@ export default function EditProduct() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "name") {
       const generatedSlug = value.toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^\w-]+/g, '')
         .replace(/--+/g, '-')
         .replace(/^-+|-+$/g, '');
-      
+
       setFormData({
         ...formData,
         name: value,
@@ -135,17 +139,17 @@ export default function EditProduct() {
   const removeImage = (index) => {
     const updatedProductImages = [...formData.product_images];
     const deletedImage = updatedProductImages.splice(index, 1)[0];
-  
+
     const updatedPreviews = [...imagePreviewUrls];
     updatedPreviews.splice(index, 1);
-  
+
     setFormData({
       ...formData,
       product_images: updatedProductImages,
     });
-  
+
     setDeletedImages((prev) => [...prev, deletedImage.image_url]);
-  
+
     setImagePreviewUrls(updatedPreviews);
   };
 
@@ -162,21 +166,21 @@ export default function EditProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formDataToSend = new FormData();
-    
+
     formDataToSend.append('_method', 'PUT');
-    
+
     formDataToSend.append('name', formData.name);
     formDataToSend.append('slug', formData.slug);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('stock', formData.stock);
     formDataToSend.append('subcategory_id', formData.subcategory_id);
-  
+
     if (formData.primary_image) {
       formDataToSend.append('primary_image', formData.primary_image);
     }
-  
+
     if (formData.product_images && Array.isArray(formData.product_images)) {
       formData.product_images.forEach((image, index) => {
         if (image instanceof File) {
@@ -184,13 +188,13 @@ export default function EditProduct() {
         }
       });
     }
-  
+
     if (deletedImages && deletedImages.length > 0) {
       deletedImages.forEach((imagePath, index) => {
         formDataToSend.append(`deleted_images[${index}]`, imagePath);
       });
     }
-  
+
     try {
       const response = await api.post(`/v1/admin/products/${productId}`, formDataToSend);
       console.log("Response:", response);
@@ -227,19 +231,12 @@ export default function EditProduct() {
         </div>
         <div className="flex space-x-3">
           <button
-            onClick={() => console.log("Navigate back to products list")}
-            className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md text-sm flex items-center"
-          >
+            onClick={() => navigate(-1)}
+            className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md text-sm flex items-center">
             <ArrowLeft size={16} className="mr-2" />
             Back to Products
           </button>
-          <button
-            onClick={handleSubmit}
-            className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm flex items-center"
-          >
-            <Save size={16} className="mr-2" />
-            Update Product
-          </button>
+
         </div>
       </div>
 

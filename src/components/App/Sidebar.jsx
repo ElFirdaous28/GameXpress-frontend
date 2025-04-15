@@ -8,8 +8,7 @@ import {
     Settings,
     X
 } from "lucide-react";
-import LogoutButton from "../Auth/LogoutButton";
-
+import LogoutButton from '../../Pages/Auth/LogoutButton'
 export default function Sidebar({ isOpen, setIsOpen }) {
     return (
         <>
@@ -67,7 +66,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
                     {/* Spacer pushes this to bottom */}
                     <div className="mt-auto py-2 px-4 hover:bg-gray-700 rounded-md flex items-center text-white">
-                        <LogoutButton />
+                        <LogoutButton/>
                     </div>
                 </nav>
             </div>
