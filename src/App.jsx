@@ -12,10 +12,12 @@ import AddProduct from './Pages/Products/AddProduct';
 import EditProduct from './Pages/Products/EditProduct';
 import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
+import ProductListing from './Pages/Products/ProductListing';
 import UserManagementTable from './Pages/UserManagementTable';
 import { UserProvider } from './Context/UserContext';
 import { CategoryProvider } from './Context/CategoryContext';
 import Categories from './Pages/Categories';
+import OrderSummary from './Pages/OrderSummary';
 
 
 export default function App() {
@@ -40,6 +42,8 @@ export default function App() {
         <Route path="/products" element={<AllProducts />} />
         <Route path="/products/add" element={<AddProduct />} />
         <Route path="/products/edit/:id" element={<EditProduct />} />
+        <Route path="orders" element={<OrderSummary />} />
+        <Route path="/" element={<ProductListing />} />
 
 
 
