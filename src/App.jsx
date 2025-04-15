@@ -14,6 +14,7 @@ import Login from './Pages/Auth/Login';
 import Register from './Pages/Auth/Register';
 import ProductListing from './Pages/Products/ProductListing';
 import UserManagementTable from './Pages/UserManagementTable';
+import OrderSummary from './Pages/OrderSummary';
 
 
 export default function App() {
@@ -40,6 +41,10 @@ export default function App() {
 
       <Route path="/" element={<ProductListing />} />
       <Route path="/users" element={<UserManagementTable />} />
+
+
+      <Route path="orders" element={<OrderSummary />} />
+
 
       <Route path="/f" element={<Layout />} />
       {/* </Route> */}
