@@ -8,6 +8,7 @@ import {
     Settings,
     X
 } from "lucide-react";
+import LogoutButton from "../Auth/LogoutButton";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
     return (
@@ -22,20 +23,19 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
             {/* Sidebar */}
             <div className={`
-          fixed inset-y-0 left-0 w-64 bg-gray-800 transition-transform duration-300 ease-in-out z-30
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-          lg:translate-x-0 lg:static lg:z-auto
-        `}>
+                fixed inset-y-0 left-0 w-64 bg-gray-800 transition-transform duration-300 ease-in-out z-30
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+                lg:translate-x-0 lg:static lg:z-auto
+            `}>
                 <div className="flex items-center justify-between h-16 px-6 border-b border-gray-700">
                     <span className="text-xl font-bold text-blue-500">AdminPanel</span>
-                    <button
-                        className="lg:hidden"
-                        onClick={() => setIsOpen(false)}
-                    >
+                    <button className="lg:hidden" onClick={() => setIsOpen(false)}>
                         <X size={24} />
                     </button>
                 </div>
-                <nav className="mt-6 px-4">
+
+                {/* Make the nav a flex column with full height */}
+                <nav className="h-[calc(100%-4rem)] flex flex-col px-4 pt-6 pb-10">
                     <div className="py-2 px-4 mb-2 bg-gray-700 rounded-md flex items-center text-white">
                         <BarChart size={20} className="mr-3" />
                         <span>Dashboard</span>
@@ -63,6 +63,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                     <div className="py-2 px-4 mb-2 hover:bg-gray-700 rounded-md flex items-center">
                         <Settings size={20} className="mr-3" />
                         <span>Settings</span>
+                    </div>
+
+                    {/* Spacer pushes this to bottom */}
+                    <div className="mt-auto py-2 px-4 hover:bg-gray-700 rounded-md flex items-center text-white">
+                        <LogoutButton />
                     </div>
                 </nav>
             </div>
