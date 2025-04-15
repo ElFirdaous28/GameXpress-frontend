@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
-import Statistics from '../components/App/Statistics';
 import { Package, Users, FolderTree, Grid3X3 } from "lucide-react";
-import LowStockProductsTable from '../components/App/LowStockProductsTable';
 import api from '../Services/api';
 import Loading from '../components/App/Loading';
+import LowStockProductsTable from '../components/statisctics/LowStockProductsTable';
+import Statistics from '../components/statisctics/Statistics';
 
 export default function Dashboard() {
     // State to store the fetched data

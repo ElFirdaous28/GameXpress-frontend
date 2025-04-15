@@ -1,7 +1,5 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
 import Dashboard from './Pages/Dashboard';
 import PrivateRoute from './Router/PrivateRoute';
 import Unauthorized from './Pages/Unauthorized';
@@ -12,6 +10,9 @@ import Layout from './Pages/Layout';
 import AllProducts from './Pages/Products/AllProducts';
 import AddProduct from './Pages/Products/AddProduct';
 import EditProduct from './Pages/Products/EditProduct';
+import Login from './Pages/Auth/Login';
+import Register from './Pages/Auth/Register';
+
 
 export default function App() {
   const { loading } = useAuth();
@@ -32,9 +33,8 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
 
       <Route path="/products" element={<AllProducts />} />
-      <Route path="/addProduct" element={<AddProduct />} />
-      <Route path="/editProduct/:id" element={<EditProduct />} />
-
+      <Route path="/products/add" element={<AddProduct />} />
+      <Route path="/products/edit/:id" element={<EditProduct />} />
 
       <Route path="/f" element={<Layout />} />
       {/* </Route> */}

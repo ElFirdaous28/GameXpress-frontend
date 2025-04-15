@@ -56,7 +56,7 @@ export default function ProductsPage() {
         <Layout title="Products">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Products Management</h1>
-                <AppLink to="/addProduct" className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm flex items-center"><Plus size={16} className="mr-2" />
+                <AppLink to="/products/add" className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm flex items-center"><Plus size={16} className="mr-2" />
                     Add Product</AppLink>
             </div>
 
@@ -146,7 +146,7 @@ export default function ProductsPage() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <div className="flex space-x-2">
-                                            <AppLink to={`/editProduct/${product.id} `} className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-xs flex items-center">
+                                            <AppLink to={`/products/edit/${product.id} `} className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-xs flex items-center">
                                                 <Edit2 size={12} className="mr-1" />
                                                 Edit
                                             </AppLink>
