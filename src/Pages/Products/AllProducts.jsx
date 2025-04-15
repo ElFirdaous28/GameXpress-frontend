@@ -146,7 +146,7 @@ export default function ProductsPage() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <div className="flex space-x-2">
-                                            <AppLink to="/editProduct" className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-xs flex items-center">
+                                            <AppLink to={`/editProduct/${product.id} `} className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-xs flex items-center">
                                                 <Edit2 size={12} className="mr-1" />
                                                 Edit
                                             </AppLink>

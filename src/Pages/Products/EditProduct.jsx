@@ -10,9 +10,12 @@ import {
 } from "lucide-react";
 import Layout from "../Layout";
 import api from "../../Services/api";
+import { useParams } from "react-router";
 
-export default function EditProduct({ productId }) {
-
+export default function EditProduct() {
+  const { id } = useParams();
+  const productId = parseInt(id); 
+  
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,7 +24,7 @@ export default function EditProduct({ productId }) {
     stock: "",
     subcategory_id: "",
     primary_image: null,
-    images: []
+    product_images: []
   });
 
   const [loading, setLoading] = useState(true);
@@ -40,13 +43,12 @@ export default function EditProduct({ productId }) {
   // Mock image uploads
   const [imagePreviewUrls, setImagePreviewUrls] = useState([]);
   const [primaryImagePreview, setPrimaryImagePreview] = useState(null);
-  const [deletedImages, setDeletedImages] = useState([]); // Track deleted images    
+  const [deletedImages, setDeletedImages] = useState([]); 
 
   // Mock API call to get product data
   useEffect(() => {
-    productId = 20
     const fetchProduct = async () => {
-      try {
+      try {        
         const response = await api.get(`v1/admin/products/${productId}`);
         const product = response.data.product;
         setFormData(product);
@@ -112,7 +114,7 @@ export default function EditProduct({ productId }) {
       // Update form data
       setFormData({
         ...formData,
-        images: [...formData.product_images, ...filesArray]
+        product_images: [...formData.product_images, ...filesArray]
       });
 
       // Create previews
@@ -163,22 +165,18 @@ export default function EditProduct({ productId }) {
     
     const formDataToSend = new FormData();
     
-    // Add _method field for Laravel (if using Laravel)
     formDataToSend.append('_method', 'PUT');
     
-    // Append regular form fields
     formDataToSend.append('name', formData.name);
     formDataToSend.append('slug', formData.slug);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('stock', formData.stock);
     formDataToSend.append('subcategory_id', formData.subcategory_id);
   
-    // Append primary image if available
     if (formData.primary_image) {
       formDataToSend.append('primary_image', formData.primary_image);
     }
   
-    // Append additional images
     if (formData.product_images && Array.isArray(formData.product_images)) {
       formData.product_images.forEach((image, index) => {
         if (image instanceof File) {
@@ -187,7 +185,6 @@ export default function EditProduct({ productId }) {
       });
     }
   
-    // Append deleted images
     if (deletedImages && deletedImages.length > 0) {
       deletedImages.forEach((imagePath, index) => {
         formDataToSend.append(`deleted_images[${index}]`, imagePath);
@@ -195,8 +192,7 @@ export default function EditProduct({ productId }) {
     }
   
     try {
-      // Use POST with _method instead of PUT for FormData
-      const response = await api.post(`/v1/admin/products/20`, formDataToSend);
+      const response = await api.post(`/v1/admin/products/${productId}`, formDataToSend);
       console.log("Response:", response);
     } catch (error) {
       if (error.response && error.response.status === 422) {
