@@ -1,38 +1,70 @@
-import LogoutButton from "../components/Auth/LogoutButton";
-import { useAuth } from "../Context/AuthContext";
+import React, { useState, useEffect } from 'react';
+import Layout from './Layout';
+import Statistics from '../components/App/Statistics';
+import { Package, Users, FolderTree, Grid3X3 } from "lucide-react";
+import LowStockProductsTable from '../components/App/LowStockProductsTable';
+import api from '../Services/api';
+import Loading from '../components/App/Loading';
 
-const Dashboard = () => {
+export default function Dashboard() {
+    // State to store the fetched data
+    const [dashboardData, setDashboardData] = useState(null);
+    const [loading, setLoading] = useState(true); // Track loading state
 
-    const { user } = useAuth();
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('v1/admin/dashboard');
+                setDashboardData(response.data.data);
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+            }
+        };
+
+        fetchData(); // Call the fetch function
+    }, []);
+
+    if (loading) return <Loading />
+
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div className="px-4 py-5 sm:px-6">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">Dashboard</h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                            Welcome back to your admin dashboard, {user?.user?.name}!
-                        </p>
-                    </div>
-                    <div className="border-t border-gray-200">
-                        <dl>
-                            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt className="text-sm font-medium text-gray-500">Name</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{user?.user?.name}</dd>
-                            </div>
-                            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{user?.user?.email}</dd>
-                            </div>
-                            {/* Add more sections as needed */}
-                            <div><LogoutButton /></div> 
-                        </dl>
-                    </div>
-                </div>
+        <Layout title="Dashboard">
+            {/* statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <Statistics
+                    title="Total Products"
+                    value={dashboardData.total_products}
+                    icon={<Package size={24} />}
+                    iconColor="bg-blue-500"
+                    percentageChange="↑ 12%"
+                />
+                <Statistics
+                    title="Total Users"
+                    value={dashboardData.total_users}
+                    icon={<Users size={24} />}
+                    iconColor="bg-green-500"
+                    percentageChange="↑ 8%"
+                />
+                <Statistics
+                    title="Categories"
+                    value={dashboardData.total_categories}
+                    icon={<FolderTree size={24} />}
+                    iconColor="bg-purple-500"
+                    percentageChange="↑ 3%"
+                />
+                <Statistics
+                    title="Subcategories"
+                    value={dashboardData.total_subcategories}
+                    icon={<Grid3X3 size={24} />}
+                    iconColor="bg-orange-500"
+                    percentageChange="↑ 5%"
+                />
             </div>
-        </div>
-    );
-};
 
-export default Dashboard;
+            {/* Low Stock Products Table */}
+            <LowStockProductsTable products={dashboardData.low_stock_products} />
+        </Layout>
+    );
+}

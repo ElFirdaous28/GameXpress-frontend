@@ -6,15 +6,15 @@ import Dashboard from './Pages/Dashboard';
 import PrivateRoute from './Router/PrivateRoute';
 import Unauthorized from './Pages/Unauthorized';
 import MyTest from './Pages/MyTest';
-import Loading from './components/App/Loading';
 import { useAuth } from './Context/AuthContext';
 import UnauthenticatedRoute from './Router/UnauthenticatedRoute';
 import Layout from './Pages/Layout';
-import DashboardExample from './Pages/DashboardExample';
+import AllProducts from './Pages/Products/AllProducts';
+import AddProduct from './Pages/Products/AddProduct';
+import EditProduct from './Pages/Products/EditProduct';
 
 export default function App() {
   const { loading } = useAuth();
-  if (loading) return <Loading />
 
   return (
     <Routes>
@@ -30,7 +30,12 @@ export default function App() {
       {/* <Route element={<PrivateRoute roles={["super_admin"]} />}> */}
       <Route path="/test" element={<MyTest />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dashboard/example" element={<DashboardExample />} />
+
+      <Route path="/products" element={<AllProducts />} />
+      <Route path="/addProduct" element={<AddProduct />} />
+      <Route path="/editProduct" element={<EditProduct />} />
+
+
       <Route path="/f" element={<Layout />} />
       {/* </Route> */}
     </Routes>

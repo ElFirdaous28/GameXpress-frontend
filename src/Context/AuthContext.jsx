@@ -20,8 +20,8 @@ export const AuthProvider = ({ children }) => {
                     setUser(data);
                     setIsAuthenticated(true);
                 } catch (err) {
-                    console.error('Authentication check failed:', err);
                     logout();
+                    navigate('/login');
                 } finally {
                     setLoading(false);
                 }
