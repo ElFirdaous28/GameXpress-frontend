@@ -90,7 +90,7 @@ export default function ProductListing() {
             {/* Product Image */}
             <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
               <img
-                src={product.image || "/api/placeholder/400/320"}
+                src={`http://localhost:8000/storage/${product.primary_image}` || "/api/placeholder/400/320"}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
