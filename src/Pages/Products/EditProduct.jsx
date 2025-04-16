@@ -182,11 +182,11 @@ export default function EditProduct() {
     }
 
     if (formData.product_images && Array.isArray(formData.product_images)) {
-      formData.product_images.forEach((image, index) => {
+      formData.product_images.forEach((image) => {
         if (image instanceof File) {
-          formDataToSend.append(`product_images[${index}]`, image);
+          formDataToSend.append('images[]', image);
         }
-      });
+      });      
     }
 
     if (deletedImages && deletedImages.length > 0) {

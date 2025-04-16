@@ -17,7 +17,8 @@ import UserManagementTable from './Pages/UserManagementTable';
 import { UserProvider } from './Context/UserContext';
 import { CategoryProvider } from './Context/CategoryContext';
 import Categories from './Pages/Categories';
-import OrderSummary from './Pages/OrderSummary';
+import CartSummary from './Pages/CartSummary';
+import ProductDetails from './Pages/Products/ProductDetails';
 
 
 export default function App() {
@@ -42,7 +43,8 @@ export default function App() {
         <Route path="/products" element={<AllProducts />} />
         <Route path="/products/add" element={<AddProduct />} />
         <Route path="/products/edit/:id" element={<EditProduct />} />
-        <Route path="orders" element={<OrderSummary />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="cart" element={<CartSummary />} />
         <Route path="/" element={<ProductListing />} />
 
 
