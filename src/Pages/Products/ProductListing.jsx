@@ -30,7 +30,19 @@ export default function ProductListing() {
       fetchProducts();
   }, []);
   
-
+  const addToCart = (product) => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingProductIndex = cart.findIndex(item => item.id === product.id);
+  
+    if (existingProductIndex !== -1) {
+      cart[existingProductIndex].quantity += 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    console.log("Produit ajouté au panier :", product.name);
+  };
+  
   
 
   // Pagination calculations
@@ -116,7 +128,7 @@ export default function ProductListing() {
                   </h3>
                   <div className="flex justify-between items-center mt-2">
                     <div className="font-bold">${(Number(product.price)).toFixed(2)}</div>
-                    <button
+                    <button  onClick={() => addToCart(product)}
                       className={`flex items-center rounded-md px-3 py-1.5 text-sm 
                                ${product.stock > 0
                           ? 'bg-blue-600 hover:bg-blue-700 text-white'
