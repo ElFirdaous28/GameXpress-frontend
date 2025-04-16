@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { Search, Filter, SortAsc, Heart, ShoppingCart, Star } from 'lucide-react';
 import Layout from '../Layout';
+import api from "../../Services/api";
+
 
 export default function ProductListing() {
 
-  const initialProducts = [
-    {
-      id: 1,
-      name: 'Wireless Headphones',
-      category: 'Audio',
-      price: 59.99,
-      image: '/images/headphones.jpg',
-      stock: 4,
-    },
-    {
-      id: 2,
-      name: 'Gaming Mouse',
-      category: 'Accessories',
-      price: 39.99,
-      image: '/images/mouse.jpg',
-      stock: 12,
-    },
-    // Add more mock products as needed
-  ];
-  const [products] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+
+  const fetchProducts = async () => {
+      try {
+          const response = await api.get("v1/admin/products");
+          setProducts(response.data.products);
+          console.log(response.data.products);
+      } catch (error) {
+          console.log(error);
+      }
+  };
+
+  useEffect(() => {
+      fetchProducts();
+  }, []);
+  
 
   
 
