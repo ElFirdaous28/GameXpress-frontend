@@ -68,6 +68,12 @@ export default function MessagePopup({
 
     return (
         <div className="fixed top-20 right-4 z-50">
+            <MessagePopup
+                type="warning"
+                title="Connection Issues"
+                message="We're having trouble connecting to the server. Your changes may not be saved."
+                duration={5000}
+            />
             <div className={`scale-z-100 min-w-80 max-w-md shadow-lg rounded-lg overflow-hidden transition-all duration-300 ease-in-out`}>
                 <div className={`${config.bgColor} border-l-4 ${config.borderColor} p-4 flex items-start`}>
                     <div className="flex-shrink-0">
@@ -93,5 +99,5 @@ export default function MessagePopup({
             </div>
         </div>
     );
-    
+
 }
