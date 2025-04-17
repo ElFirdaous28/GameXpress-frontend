@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Package, AlertCircle, Trash2 } from 'lucide-react';
 import Layout from './Layout';
+import Loading from '../components/App/Loading';
 import api from '../Services/api';
 import { useAuth } from '../Context/AuthContext';
 
@@ -18,7 +19,7 @@ export default function CartSummary() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [quantities, setQuantities] = useState({});
-    
+
     // Frontend pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -27,24 +28,45 @@ export default function CartSummary() {
         try {
             setLoading(true);
             setError(null);
-            
-            // Use the correct endpoint based on authentication status
-            const endpoint = isAuthenticated ? "v2/getCart" : "v2/getCart/Guest";
-            const response = await api.get(endpoint);
-            
-            // Extract cart items and summary data
-            const items = response.data.items || [];
+            let data;
+
+            if (isAuthenticated) {
+                const response = await api.get('v2/getCart');
+                console.log("API Response:", response.data);
+                data = response.data || {};
+            } else {
+                data = JSON.parse(localStorage.getItem("cart")) || {
+                    items: [],
+                    totalItems: 0,
+                    total_before_tax: 0,
+                    total_tax: 0,
+                    total_after_tax: 0,
+                    total_discount: 0,
+                    total_final: 0
+                };
+                console.log("LocalStorage Cart:", data);
+            }
+
+            const items = data.items || [];
             setCartItems(items);
-            
+
             // Set initial quantities from cart items
             const initialQuantities = {};
             items.forEach(item => {
                 initialQuantities[item.product_id] = item.quantity;
             });
             setQuantities(initialQuantities);
-            
+
             // Extract summary data
-            const { total_before_tax, total_tax, total_after_tax, total_discount, total_final, totalItems } = response.data;
+            const {
+                total_before_tax,
+                total_tax,
+                total_after_tax,
+                total_discount,
+                total_final,
+                totalItems
+            } = data;
+
             setCartSummary({
                 total_before_tax: total_before_tax || 0,
                 total_tax: total_tax || 0,
@@ -53,8 +75,7 @@ export default function CartSummary() {
                 total_final: total_final || 0,
                 totalItems: totalItems || items.length
             });
-            
-            console.log("API Response:", response.data);
+
         } catch (err) {
             console.error("Error fetching cart items:", err);
             setError("Failed to load cart items. Please try again later.");
@@ -62,6 +83,7 @@ export default function CartSummary() {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchCartItems();
@@ -94,11 +116,42 @@ export default function CartSummary() {
         // api.put("v2/updateCart", { product_id: productId, quantity: quantities[productId] })
     };
 
-    // Handle remove cart item
-    const handleRemoveItem = (productId) => {
-        console.log(`Removing item ${productId} from cart`);
-        // TODO: Implement API call to remove cart item
-        // api.delete(`v2/removeFromCart/${productId}`)
+    const handleRemoveItem = async (productId) => {
+        if (isAuthenticated) {
+            try {
+                const response = await api.delete(`v2/destroyProductForClient/${productId}`);
+                console.log("Removed from API:", response.data);
+                fetchCartItems();
+            } catch (error) {
+                console.log("API error:", error);
+            }
+        } else {
+            try {
+                const cartData = JSON.parse(localStorage.getItem("cart"));
+                if (cartData) {
+                    const updatedItems = cartData.items.filter(item => item.product_id !== productId);
+
+                    const total_before_tax = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                    const totalItems = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+                    const updatedCart = {
+                        ...cartData,
+                        items: updatedItems,
+                        totalItems,
+                        total_before_tax,
+                        total_tax: 0,
+                        total_after_tax: total_before_tax,
+                        total_discount: 0,
+                        total_final: total_before_tax
+                    };
+                    localStorage.setItem("cart", JSON.stringify(updatedCart));
+                    fetchCartItems();
+                }
+
+            } catch (error) {
+                console.log("Error updating localStorage cart:", error);
+            }
+        }
     };
 
     // Frontend pagination logic
@@ -111,7 +164,7 @@ export default function CartSummary() {
     const getPageNumbers = () => {
         const totalPageNumbers = 5; // Show max 5 page numbers
         const pageNumbers = [];
-        
+
         if (totalPages <= totalPageNumbers) {
             // Show all pages if total pages are less than max
             for (let i = 1; i <= totalPages; i++) {
@@ -121,19 +174,21 @@ export default function CartSummary() {
             // Calculate range around current page
             let startPage = Math.max(1, currentPage - 2);
             let endPage = Math.min(totalPages, startPage + totalPageNumbers - 1);
-            
+
             // Adjust start page if needed
             if (endPage - startPage < totalPageNumbers - 1) {
                 startPage = Math.max(1, endPage - totalPageNumbers + 1);
             }
-            
+
             for (let i = startPage; i <= endPage; i++) {
                 pageNumbers.push(i);
             }
         }
-        
+
         return pageNumbers;
     };
+
+    if (loading) return <Loading />
 
     return (
         <Layout>
@@ -160,10 +215,9 @@ export default function CartSummary() {
                     <AlertCircle size={48} className="mx-auto mb-4 text-red-500" />
                     <h2 className="text-xl font-medium mb-2">Error Loading Cart</h2>
                     <p className="text-gray-500 dark:text-gray-400 mb-4">{error}</p>
-                    <button 
+                    <button
                         onClick={fetchCartItems}
-                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
-                    >
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
                         Try Again
                     </button>
                 </div>
@@ -207,7 +261,7 @@ export default function CartSummary() {
                             </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 {currentCartItems.map((item) => (
-                                    <tr key={item.product_id} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                                    <tr key={item.product_id} className="hover:bg-gray-50 dark:hover:bg-gray-500 dark:hover:bg-gray-750">
                                         <td className="px-4 py-4">
                                             <div className="flex items-center">
                                                 <div className="h-16 w-16 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-md mr-4">
@@ -228,10 +282,9 @@ export default function CartSummary() {
                                         </td>
                                         <td className="px-4 py-4 text-center">
                                             <div className="flex items-center justify-center">
-                                                <button 
+                                                <button
                                                     className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-l-md hover:bg-gray-300 dark:hover:bg-gray-600"
-                                                    onClick={() => handleQuantityChange(item.product_id, (quantities[item.product_id] || item.quantity) - 1)}
-                                                >
+                                                    onClick={() => handleQuantityChange(item.product_id, (quantities[item.product_id] || item.quantity) - 1)}>
                                                     -
                                                 </button>
                                                 <input
@@ -241,10 +294,9 @@ export default function CartSummary() {
                                                     onChange={(e) => handleQuantityChange(item.product_id, parseInt(e.target.value, 10))}
                                                     className="w-12 px-2 py-1 text-center border-y border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
                                                 />
-                                                <button 
+                                                <button
                                                     className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-r-md hover:bg-gray-300 dark:hover:bg-gray-600"
-                                                    onClick={() => handleQuantityChange(item.product_id, (quantities[item.product_id] || item.quantity) + 1)}
-                                                >
+                                                    onClick={() => handleQuantityChange(item.product_id, (quantities[item.product_id] || item.quantity) + 1)}>
                                                     +
                                                 </button>
                                             </div>
@@ -257,14 +309,12 @@ export default function CartSummary() {
                                                 <button
                                                     onClick={() => handleUpdateItem(item.product_id)}
                                                     className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-                                                    disabled={quantities[item.product_id] === item.quantity}
-                                                >
+                                                    disabled={quantities[item.product_id] === item.quantity}>
                                                     Update
                                                 </button>
                                                 <button
                                                     onClick={() => handleRemoveItem(item.product_id)}
-                                                    className="px-2 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
-                                                >
+                                                    className="px-2 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </div>
@@ -293,7 +343,7 @@ export default function CartSummary() {
                             </div>
                         </div>
                         <div className="md:w-1/3">
-                            <div className="bg-gray-50 dark:bg-gray-750 p-4 rounded-lg">
+                            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                 <div className="flex justify-between py-2">
                                     <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
                                     <span className="font-medium">${Number(cartSummary.total_before_tax).toFixed(2)}</span>
@@ -328,8 +378,7 @@ export default function CartSummary() {
                             className={`p-2 rounded-md ${currentPage === 1
                                 ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
                                 : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-                            aria-label="Previous page"
-                        >
+                            aria-label="Previous page">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                             </svg>
@@ -342,8 +391,7 @@ export default function CartSummary() {
                                 onClick={() => setCurrentPage(page)}
                                 className={`px-3 py-1 rounded-md ${currentPage === page
                                     ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-                            >
+                                    : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}>
                                 {page}
                             </button>
                         ))}
@@ -354,8 +402,7 @@ export default function CartSummary() {
                             className={`p-2 rounded-md ${currentPage === totalPages
                                 ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
                                 : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-                            aria-label="Next page"
-                        >
+                            aria-label="Next page">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
