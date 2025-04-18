@@ -21,7 +21,7 @@ Frontend de la plateforme e-commerce GameXpress (vente de jeux vidéo), connect�
 ## Démarrage rapide
 
 ## commands
-- git clone https://github.com/ton-utilisateur/gamexpress-frontend
+- git clone https://github.com/ElFirdaous28/GameXpress-frontend.git
 - cd gamexpress-frontend
 - npm install
 - npm run dev
