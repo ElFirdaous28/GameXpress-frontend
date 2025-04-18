@@ -6,6 +6,7 @@ import api from '../Services/api';
 import { useAuth } from '../Context/AuthContext';
 
 export default function CartSummary() {
+
     const { isAuthenticated, user } = useAuth();
     const [cartItems, setCartItems] = useState([]);
     const [cartSummary, setCartSummary] = useState({
@@ -34,7 +35,7 @@ export default function CartSummary() {
                 const response = await api.get('v2/getCart');
                 console.log("API Response:", response.data);
                 data = response.data || {};
-            } else {
+            } else if (isAuthenticated === true) {
                 data = JSON.parse(localStorage.getItem("cart")) || {
                     items: [],
                     totalItems: 0,
@@ -45,6 +46,7 @@ export default function CartSummary() {
                     total_final: 0
                 };
             }
+            else return
 
             const items = data.items || [];
             setCartItems(items);
@@ -159,7 +161,7 @@ export default function CartSummary() {
     const handleRemoveItem = async (productId) => {
         if (isAuthenticated) {
             try {
-                const response = await api.post(`v2/destroyProductForClient/${productId}`);
+                const response = await api.delete(`v2/destroyProductForClient/${productId}`);
                 console.log("Removed from API:", response.data);
                 fetchCartItems();
             } catch (error) {
@@ -169,7 +171,7 @@ export default function CartSummary() {
             try {
                 const cartData = JSON.parse(localStorage.getItem("cart"));
                 if (cartData) {
-                    const updatedItems = cartData.items.filter(item => item.cart_item_id !== productId);
+                    const updatedItems = cartData.items.filter(item => item.product_id !== productId);
 
                     const total_before_tax = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
                     const totalItems = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -353,7 +355,7 @@ export default function CartSummary() {
                                                     Update
                                                 </button>
                                                 <button
-                                                    onClick={() => handleRemoveItem(item.cart_item_id)}
+                                                    onClick={() => handleRemoveItem(item.product_id)}
                                                     className="px-2 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200">
                                                     <Trash2 size={16} />
                                                 </button>

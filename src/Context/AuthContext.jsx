@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", token);
         setToken(token); // Set the token here
         setIsAuthenticated(true);
+        mergeCart();
         navigate("/dashboard");
     };
 
@@ -65,6 +66,7 @@ export const AuthProvider = ({ children }) => {
         setToken(token); // Set the token here
         setUser(response.data.user);
         setIsAuthenticated(true);
+        mergeCart();
         navigate("/dashboard");
     };
 
@@ -82,6 +84,24 @@ export const AuthProvider = ({ children }) => {
         if (!requiredRoles || requiredRoles.length === 0) return true;
         if (!user?.roles) return false;
         return requiredRoles.some(role => user.roles.includes(role));
+    };
+
+    const mergeCart = async () => {
+        const cartData = JSON.parse(localStorage.getItem("cart"));
+
+        if (cartData) {
+            try {
+                const response = await api.post("merge", { cart: cartData.items });
+                console.log(response.data);
+                localStorage.removeItem('cart')
+            } catch (error) {
+                if (error.response && error.response.status === 500) {
+                    console.log('Internal server error:', error.response.data);
+                } else {
+                    console.log("API error:", error);
+                }
+            }
+        }
     };
 
     // Use useMemo to optimize context value, preventing unnecessary re-renders
