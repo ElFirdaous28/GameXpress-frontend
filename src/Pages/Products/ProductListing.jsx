@@ -17,33 +17,57 @@ export default function ProductListing() {
   const itemsPerPage = 8;
 
   const fetchProducts = async () => {
-      try {
-          const response = await api.get("v1/admin/products");
-          setProducts(response.data.products);
-          console.log(response.data.products);
-      } catch (error) {
-          console.log(error);
-      }
+    try {
+      const response = await api.get("v1/admin/products");
+      setProducts(response.data.products);
+      console.log(response.data.products);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-      fetchProducts();
+    fetchProducts();
   }, []);
-  
+
   const addToCart = (product) => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existingProductIndex = cart.findIndex(item => item.id === product.id);
-  
-    if (existingProductIndex !== -1) {
-      cart[existingProductIndex].quantity += 1;
+    const cart = JSON.parse(localStorage.getItem('cart')) || {
+      items: [],
+      totalItems: 0,
+      total_before_tax: 0,
+      total_tax: 0,
+      total_after_tax: 0,
+      total_discount: 0,
+      total_final: 0
+    };
+
+    const existingIndex = cart.items.findIndex(item => item.product_id === product.id);
+
+    if (existingIndex !== -1) {
+      cart.items[existingIndex].quantity += 1;
     } else {
-      cart.push({ ...product, quantity: 1 });
+      cart.items.push({
+        cart_item_id: product.id,
+        name: product.name,
+        image: product.primary_image || null,
+        price: parseFloat(product.price),
+        quantity: 1
+      });
     }
+
+    // Recalculate totals
+    cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    cart.total_before_tax = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    // cart.total_tax = parseFloat((cart.total_before_tax * 0).toFixed(2));
+    cart.total_after_tax = parseFloat((cart.total_before_tax + cart.total_tax).toFixed(2));
+    cart.total_discount = 0; // can update later
+    cart.total_final = cart.total_after_tax;
+
     localStorage.setItem('cart', JSON.stringify(cart));
     console.log("Produit ajouté au panier :", product.name);
   };
-  
-  
+
+
 
   // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -128,7 +152,7 @@ export default function ProductListing() {
                   </h3>
                   <div className="flex justify-between items-center mt-2">
                     <div className="font-bold">${(Number(product.price)).toFixed(2)}</div>
-                    <button  onClick={() => addToCart(product)}
+                    <button onClick={() => addToCart(product)}
                       className={`flex items-center rounded-md px-3 py-1.5 text-sm 
                                ${product.stock > 0
                           ? 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -190,7 +214,7 @@ export default function ProductListing() {
       </div>
 
       {/* Right Sidebar */}
-        <RightSidebar />
+      <RightSidebar />
     </div>
   );
 }
