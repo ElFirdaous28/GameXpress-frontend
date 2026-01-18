@@ -78,10 +78,6 @@ export default function CartSummary() {
                 totalItems: totalItems || items.length
             });
 
-<<<<<<< HEAD
-            console.log("API Response:", response.data);
-=======
->>>>>>> development
         } catch (err) {
             console.error("Error fetching cart items:", err);
             setError("Failed to load cart items. Please try again later.");
@@ -310,11 +306,7 @@ export default function CartSummary() {
                             </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                 {currentCartItems.map((item) => (
-<<<<<<< HEAD
-                                    <tr key={item.product_id} className="hover:bg-gray-50 dark:hover:bg-gray-500 dark:hover:bg-gray-750">
-=======
                                     <tr key={item.cart_item_id} className="hover:bg-gray-50 dark:hover:bg-gray-500 dark:hover:bg-gray-750">
->>>>>>> development
                                         <td className="px-4 py-4">
                                             <div className="flex items-center">
                                                 <div className="h-16 w-16 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-md mr-4">
@@ -349,12 +341,7 @@ export default function CartSummary() {
                                                 />
                                                 <button
                                                     className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-r-md hover:bg-gray-300 dark:hover:bg-gray-600"
-<<<<<<< HEAD
-                                                    onClick={() => handleQuantityChange(item.product_id, (quantities[item.product_id] || item.quantity) + 1)}
-                                                    >
-=======
                                                     onClick={() => handleQuantityChange(item.cart_item_id, (quantities[item.cart_item_id] || item.quantity) + 1)}>
->>>>>>> development
                                                     +
                                                 </button>
                                             </div>
@@ -365,26 +352,14 @@ export default function CartSummary() {
                                         <td className="px-4 py-4 text-right">
                                             <div className="flex justify-end space-x-2">
                                                 <button
-<<<<<<< HEAD
-                                                    onClick={() => handleUpdateItem(item.product_id)}
-                                                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-                                                    disabled={quantities[item.product_id] === item.quantity}
-                                                    >
-=======
                                                     onClick={() => handleUpdateItem(item.cart_item_id)}
                                                     className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm cursor-pointer"
                                                     disabled={quantities[item.cart_item_id] === item.quantity}>
->>>>>>> development
                                                     Update
                                                 </button>
                                                 <button
                                                     onClick={() => handleRemoveItem(item.product_id)}
-<<<<<<< HEAD
-                                                    className="px-2 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
-                                                    >
-=======
                                                     className="px-2 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200">
->>>>>>> development
                                                     <Trash2 size={16} />
                                                 </button>
                                             </div>
@@ -413,11 +388,7 @@ export default function CartSummary() {
                             </div>
                         </div>
                         <div className="md:w-1/3">
-<<<<<<< HEAD
-                            <div className="bg-gray-700 dark:bg-gray-750 p-4 rounded-lg">
-=======
                             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
->>>>>>> development
                                 <div className="flex justify-between py-2">
                                     <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
                                     <span className="font-medium">${Number(cartSummary.total_before_tax).toFixed(2)}</span>
@@ -452,12 +423,7 @@ export default function CartSummary() {
                             className={`p-2 rounded-md ${currentPage === 1
                                 ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
                                 : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-<<<<<<< HEAD
-                                aria-label="Previous page"
-                                >
-=======
                             aria-label="Previous page">
->>>>>>> development
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                             </svg>
@@ -466,20 +432,11 @@ export default function CartSummary() {
                         {/* Page numbers */}
                         {getPageNumbers().map(page => (
                             <button
-<<<<<<< HEAD
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-1 rounded-md ${currentPage === page
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-                                >
-=======
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
                                 className={`px-3 py-1 rounded-md ${currentPage === page
                                     ? 'bg-blue-600 text-white'
                                     : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}>
->>>>>>> development
                                 {page}
                             </button>
                         ))}
@@ -490,12 +447,7 @@ export default function CartSummary() {
                             className={`p-2 rounded-md ${currentPage === totalPages
                                 ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
                                 : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
-<<<<<<< HEAD
-                            aria-label="Next page"
-                            >
-=======
                             aria-label="Next page">
->>>>>>> development
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
